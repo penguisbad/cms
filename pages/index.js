@@ -279,12 +279,101 @@ export default function IndexPage() {
               <br />
               <br />
               <ButtonGroup fullWidth>
-                <Button>Move Up</Button>
-                <Button>Move Down</Button>
+                <Button
+                  onClick={(e) => {
+                    let newDom = JSON.parse(JSON.stringify(dom));
+                    const parent = findNode(
+                      newDom,
+                      findNode(newDom, selectedId).parentId
+                    );
+                    const index = parent.children.findIndex(
+                      (node) => node.id === selectedId
+                    );
+                    if (index <= 0) {
+                      return;
+                    }
+                    [parent.children[index], parent.children[index - 1]] = [
+                      parent.children[index - 1],
+                      parent.children[index],
+                    ];
+                    updateDom(newDom);
+                  }}
+                >
+                  Move Up
+                </Button>
+                <Button
+                  onClick={(e) => {
+                    let newDom = JSON.parse(JSON.stringify(dom));
+                    const parent = findNode(
+                      newDom,
+                      findNode(newDom, selectedId).parentId
+                    );
+                    const index = parent.children.findIndex(
+                      (node) => node.id === selectedId
+                    );
+                    if (index == parent.children.length - 1) {
+                      return;
+                    }
+                    [parent.children[index], parent.children[index + 1]] = [
+                      parent.children[index + 1],
+                      parent.children[index],
+                    ];
+                    updateDom(newDom);
+                  }}
+                >
+                  Move Down
+                </Button>
               </ButtonGroup>
               <ButtonGroup fullWidth>
-                <Button>Move In</Button>
-                <Button>Move Out</Button>
+                <Button
+                  onClick={(e) => {
+                    let newDom = JSON.parse(JSON.stringify(dom));
+                    const parent = findNode(
+                      newDom,
+                      findNode(newDom, selectedId).parentId
+                    );
+                    const index = parent.children.findIndex(
+                      (node) => node.id === selectedId
+                    );
+                    if (parent.name === 'root') {
+                      return;
+                    }
+                    const parentOfParent = findNode(newDom, parent.parentId);
+                    let newNode = JSON.parse(
+                      JSON.stringify(parent.children[index])
+                    );
+                    newNode.parentId = parentOfParent.id;
+                    parentOfParent.children.push(newNode);
+                    parent.children.splice(index, 1);
+                    updateDom(newDom);
+                  }}
+                >
+                  Move Out
+                </Button>
+                <Button
+                  onClick={(e) => {
+                    let newDom = JSON.parse(JSON.stringify(dom));
+                    const parent = findNode(
+                      newDom,
+                      findNode(newDom, selectedId).parentId
+                    );
+                    const index = parent.children.findIndex(
+                      (node) => node.id === selectedId
+                    );
+                    if (index == parent.children.length - 1) {
+                      return;
+                    }
+                    let newNode = JSON.parse(
+                      JSON.stringify(parent.children[index])
+                    );
+                    newNode.parentId = parent.children[index + 1].id;
+                    parent.children[index + 1].children.push(newNode);
+                    parent.children.splice(index, 1);
+                    updateDom(newDom);
+                  }}
+                >
+                  Move In
+                </Button>
               </ButtonGroup>
               <br />
               <br />
